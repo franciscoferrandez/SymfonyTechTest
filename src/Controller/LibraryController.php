@@ -2,11 +2,14 @@
 
 namespace App\Controller;
 
+use App\Infrastructure\ObjectReader\ObjectReaderInterface;
+use App\Infrastructure\ObjectReader\ObjectReaderSource;
 use App\Service\API\Common\GenericApi;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class LibraryController extends AbstractController 
@@ -69,6 +72,25 @@ class LibraryController extends AbstractController
     public function constantValueTest(Request $request) {
         $response = new JsonResponse();
         $response->setData(\App\Mapping\Product\JsonGeneric);
+        return $response;
+    }
+
+    /**
+     * @Route("/library/readxml", name="library_readxml")
+     */
+    public function readXml(Request $request, ObjectReaderInterface $xmlReader, KernelInterface $appKernel) {
+        $source = new ObjectReaderSource();
+        $source->setUrl($appKernel->getProjectDir()."/public/assets"."/bigbuy/Articulos.xml");
+        $xmlReader->setSource($source);
+
+        $responseData = [];
+
+        $responseData = $xmlReader->readFromSource();
+
+        dd($responseData);
+
+        $response = new JsonResponse();
+        $response->setData($responseData);
         return $response;
     }
 }
