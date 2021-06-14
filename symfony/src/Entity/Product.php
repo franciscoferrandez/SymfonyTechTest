@@ -10,6 +10,12 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Product implements \App\EntityInterface\ProductSystemInterface
 {
+
+    public function __construct()
+    {
+        //$this->productEans = array("hola", "adios");
+    }
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -33,14 +39,14 @@ class Product implements \App\EntityInterface\ProductSystemInterface
     private $eanVirtual;
 
     /**
-     * @ORM\Column(type="simple_array")
+     * @ORM\Column(type="simple_array", nullable=true)
      */
     private $productEans = [];
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $stock;
+    private $stock = 0;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
@@ -50,12 +56,12 @@ class Product implements \App\EntityInterface\ProductSystemInterface
     /**
      * @ORM\Column(type="integer")
      */
-    private $stockToShow;
+    private $stockToShow = 0;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $stockAvailable;
+    private $stockAvailable = 0;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -90,12 +96,12 @@ class Product implements \App\EntityInterface\ProductSystemInterface
     /**
      * @ORM\Column(type="float")
      */
-    private $priceRetail;
+    private $priceRetail = 0;
 
     /**
      * @ORM\Column(type="float")
      */
-    private $pvp;
+    private $pvp = 0;
 
     /**
      * @ORM\Column(type="float", nullable=true)
@@ -195,12 +201,12 @@ class Product implements \App\EntityInterface\ProductSystemInterface
     /**
      * @ORM\Column(type="integer")
      */
-    private $assortment;
+    private $assortment = 0;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $minSalesUnit;
+    private $minSalesUnit = 0;
 
     public function getId(): ?int
     {

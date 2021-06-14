@@ -42,7 +42,7 @@ class XmlReader implements ObjectReaderInterface
             $articulos[] = $articulo;
         }
 
-        dd($articulos);
+        return $articulos;
     }
 
 }

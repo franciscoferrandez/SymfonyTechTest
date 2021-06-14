@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Infrastructure\ObjectReader\ObjectReaderInterface;
 use App\Infrastructure\ObjectReader\ObjectReaderSource;
+use App\Repository\ProductRepository;
 use App\Service\API\Common\GenericApi;
+use App\Service\Importer\ObjectImporter;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -88,6 +90,32 @@ class LibraryController extends AbstractController
         $responseData = $xmlReader->readFromSource();
 
         dd($responseData);
+
+        $response = new JsonResponse();
+        $response->setData($responseData);
+        return $response;
+    }
+
+
+    /**
+     * @Route("/library/readjson", name="library_readjson")
+     */
+    public function readJson(Request $request, ProductRepository $repository, ObjectReaderInterface $jsonReader, ObjectImporter $importer, KernelInterface $appKernel) {
+        $source = new ObjectReaderSource();
+        $source->setUrl($appKernel->getProjectDir()."/public/assets"."/bigbuy/catalog.json");
+        $jsonReader->setSource($source);
+
+        $responseData = [];
+
+        $responseData = $jsonReader->readFromSource();
+
+        //dd($responseData);
+
+        $importer->setRepository($repository);
+        $importer->setMapping(\App\Mapping\Product\JsonGeneric);
+        $importer->setKey('sku');
+
+        $importer->import($responseData);
 
         $response = new JsonResponse();
         $response->setData($responseData);
