@@ -80,7 +80,7 @@ class LibraryController extends AbstractController
     /**
      * @Route("/library/readxml", name="library_readxml")
      */
-    public function readXml(Request $request, ObjectReaderInterface $xmlReader, KernelInterface $appKernel) {
+    public function readXml(Request $request, ProductRepository $repository, ObjectReaderInterface $xmlReader, ObjectImporter $importer, KernelInterface $appKernel) {
         $source = new ObjectReaderSource();
         $source->setUrl($appKernel->getProjectDir()."/public/assets"."/bigbuy/Articulos.xml");
         $xmlReader->setSource($source);
@@ -89,7 +89,13 @@ class LibraryController extends AbstractController
 
         $responseData = $xmlReader->readFromSource();
 
-        dd($responseData);
+        //dd($responseData);
+
+        $importer->setRepository($repository);
+        $importer->setMapping(\App\Mapping\Product\XmlGeneric);
+        $importer->setKey('sku');
+
+        $importer->import($responseData);
 
         $response = new JsonResponse();
         $response->setData($responseData);

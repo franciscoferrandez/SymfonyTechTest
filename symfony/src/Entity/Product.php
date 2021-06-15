@@ -11,11 +11,6 @@ use Doctrine\ORM\Mapping as ORM;
 class Product implements \App\EntityInterface\ProductSystemInterface
 {
 
-    public function __construct()
-    {
-        //$this->productEans = array("hola", "adios");
-    }
-
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
