@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\PropertyAuditRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -123,5 +124,10 @@ class PropertyAudit
         $this->ts = $ts;
 
         return $this;
+    }
+
+    public function __construct()
+    {
+        $this->setTs(new DateTime());
     }
 }
