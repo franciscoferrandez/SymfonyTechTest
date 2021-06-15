@@ -66,20 +66,31 @@ class ObjectImporter {
             if ($key == "id") continue;
             
             if (property_exists($dst, $key)) {
-                $methodName = "set".ucfirst($key);
-                if (method_exists($dst, $methodName)) {
-                    call_user_func(array($dst, $methodName), $value);
+                $setterName = "set".ucfirst($key);
+                $getterName = "get".ucfirst($key);
+                if (method_exists($dst, $setterName)) {
+                    
+                    // preparar valores para evento audit
+                    if (method_exists($dst, $getterName)) { $oldValue = call_user_func(array($dst, $getterName)); }
+                    else { $oldValue = ''; }
+                    if ((is_array($oldValue)) || (is_object($oldValue))) {$oldValue = json_encode($oldValue);} 
+                    if ((is_array($value)) || (is_object($value))) {$newValue = json_encode($value);} 
+                    else {$newValue = strval($value);}
 
-                    $audit = new PropertyAudit();
-                    $audit
-                        ->setEntityClass($this->repository->getClassName())
-                        ->setPropertyName($key)
-                        ->setOldValue('')
-                        ->setNewValue($value);
-                    $propertyUpdateEvent = new PropertyUpdateEvent($audit);
-                    $this->eventDispatcher->dispatch(\App\CustomEvents\PropertyUpdateEvent::NAME, $propertyUpdateEvent);
+                    // establecer nuevo valor mediante el setter
+                    call_user_func(array($dst, $setterName), $value);
 
-                    // https://www.youtube.com/watch?v=4JaWJfOLN8w
+                    if ($oldValue != $newValue) {
+                        $audit = new PropertyAudit();
+                        $audit
+                            ->setEntityClass($this->repository->getClassName())
+                            ->setEntityKey($src->{$this->key})
+                            ->setPropertyName($key)
+                            ->setOldValue($oldValue)
+                            ->setNewValue($newValue);
+                        $propertyUpdateEvent = new PropertyUpdateEvent($audit);
+                        $this->eventDispatcher->dispatch(\App\CustomEvents\PropertyUpdateEvent::NAME, $propertyUpdateEvent);
+                    }
 
                 }
             }

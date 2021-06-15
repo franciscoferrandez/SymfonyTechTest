@@ -22,6 +22,12 @@ class PropertyAudit
      */
     private $entityClass;
 
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $entityKey;
+
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
@@ -55,6 +61,18 @@ class PropertyAudit
     public function setEntityClass(?string $entityClass): self
     {
         $this->entityClass = $entityClass;
+
+        return $this;
+    }
+    
+    public function getEntityKey(): ?string
+    {
+        return $this->entityKey;
+    }
+
+    public function setEntityKey(?string $entityKey): self
+    {
+        $this->entityKey = $entityKey;
 
         return $this;
     }
