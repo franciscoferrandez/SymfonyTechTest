@@ -34,6 +34,7 @@ class ObjectImporter {
     }
 
     public function import($list) {
+        $importedList = array();
         foreach ($list as $key => $item) {
             $mappedObj = $this->mapper->map($item, $this->mapping);
             $dbObj = $this->repository->findOneBy(
@@ -44,7 +45,9 @@ class ObjectImporter {
 
             $this->em->persist($dbObj);
             $this->em->flush();
+            $importedList[] = $dbObj;
         }
+        return $importedList;
     }
 
     private function setFieldByField($dst, $src) {

@@ -496,10 +496,9 @@ class Product implements \App\EntityInterface\ProductSystemInterface
         return $this;
     }
 
-
     public function getHeightPackaging(): ?float
     {
-        return $this->HeightPackaging;
+        return $this->heightPackaging;
     }
 
     public function setHeightPackaging(?float $heightPackaging): self

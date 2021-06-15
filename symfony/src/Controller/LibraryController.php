@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\DTO\ProductDTO;
 use App\Infrastructure\ObjectReader\ObjectReaderInterface;
 use App\Infrastructure\ObjectReader\ObjectReaderSource;
+use App\Mapping\SimpleMapper;
 use App\Repository\ProductRepository;
 use App\Service\API\Common\GenericApi;
 use App\Service\Importer\ObjectImporter;
@@ -29,21 +31,18 @@ class LibraryController extends AbstractController
     /**
      * @Route("/library/list", name="library_list")
      */
-    public function list(Request $request) {
+    public function list(Request $request, ProductRepository $productRepository) {
         $this->logger->info(__CLASS__.'::'.__FUNCTION__);
+
+        $entityList = $productRepository->findAll();
+        foreach ($entityList as $key => &$item) {
+            $item = SimpleMapper::Map($item, new ProductDTO());
+        }
+
         $response = new JsonResponse();
         $response->setData([
             'success' => true,
-            'data' => [
-                [
-                    'id' => 1,
-                    'titulo' => 'El nombre de la rosa'
-                ],
-                [
-                    'id' => 2,
-                    'titulo' => 'La piel del tambor'
-                ]
-            ]
+            'data' => $entityList
                 ]);
         return $response;
     }
@@ -95,10 +94,14 @@ class LibraryController extends AbstractController
         $importer->setMapping(\App\Mapping\Product\XmlGeneric);
         $importer->setKey('sku');
 
-        $importer->import($responseData);
+        $importedList = $importer->import($responseData);
+
+        foreach ($importedList as $key => &$item) {
+            $item = SimpleMapper::Map($item, new ProductDTO());
+        }
 
         $response = new JsonResponse();
-        $response->setData($responseData);
+        $response->setData($importedList);
         return $response;
     }
 
@@ -121,10 +124,14 @@ class LibraryController extends AbstractController
         $importer->setMapping(\App\Mapping\Product\JsonGeneric);
         $importer->setKey('sku');
 
-        $importer->import($responseData);
+        $importedList = $importer->import($responseData);
+
+        foreach ($importedList as $key => &$item) {
+            $item = SimpleMapper::Map($item, new ProductDTO());
+        }
 
         $response = new JsonResponse();
-        $response->setData($responseData);
+        $response->setData($importedList);
         return $response;
     }
 }
