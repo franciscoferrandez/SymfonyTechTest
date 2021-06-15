@@ -32,3 +32,9 @@ services:
 
     App\Infrastructure\ObjectReader\ObjectReaderInterface $xmlReader: '@App\Infrastructure\ObjectReader\XmlReader'
     App\Infrastructure\ObjectReader\ObjectReaderInterface $jsonReader: '@App\Infrastructure\ObjectReader\JsonReader'
+
+
+    App\EventListener\PropertyUpdateListener:
+        tags:
+          - { name: doctrine.event_listener, event: postPersist }
+          - { name: kernel.event_listener, event: property.update, method: 'propertyUpdateAudit' }
