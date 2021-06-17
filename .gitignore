@@ -8,4 +8,5 @@
 /symfony/var/
 /symfony/vendor/
 ###< symfony/framework-bundle ###
-/mysql/
+/mysql/*
+!/mysql/.nodelete
