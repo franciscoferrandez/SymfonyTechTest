@@ -8,3 +8,4 @@
 /symfony/var/
 /symfony/vendor/
 ###< symfony/framework-bundle ###
+/mysql/
