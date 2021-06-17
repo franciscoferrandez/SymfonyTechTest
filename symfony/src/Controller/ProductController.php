@@ -88,4 +88,26 @@ class ProductController extends AbstractController
         $response->setData($importedList);
         return $response;
     }
+
+
+
+    /**
+     * @Route("/api/product/import/xlsx", name="product_import_xlsx")
+     */
+    public function readXlsx(Request $request, ObjectReaderInterface $xlsxReader, ObjectImporter $importer, KernelInterface $appKernel) {
+        $source = new ObjectReaderSource();
+        $source->setUrl($appKernel->getProjectDir()."/public/assets"."/bigbuy/Productos.xlsx");
+        $xlsxReader->setSource($source);
+        $responseData = $xlsxReader->readFromSource();
+
+        $importedList = $this->service->importFromFileWithMapping($responseData, \App\Mapping\Product\XlsxGeneric);
+
+        foreach ($importedList as $key => &$item) {
+            $item = SimpleMapper::Map($item, new ProductDTO());
+        }
+
+        $response = new JsonResponse();
+        $response->setData($importedList);
+        return $response;
+    }
 }

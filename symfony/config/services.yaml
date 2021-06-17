@@ -32,6 +32,7 @@ services:
 
     App\Infrastructure\ObjectReader\ObjectReaderInterface $xmlReader: '@App\Infrastructure\ObjectReader\XmlReader'
     App\Infrastructure\ObjectReader\ObjectReaderInterface $jsonReader: '@App\Infrastructure\ObjectReader\JsonReader'
+    App\Infrastructure\ObjectReader\ObjectReaderInterface $xlsxReader: '@App\Infrastructure\ObjectReader\XlsxReader'
 
 
     App\EventListener\PropertyUpdateListener:
